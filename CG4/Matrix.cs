@@ -4,7 +4,7 @@ namespace CG4
 {
 	public class Matrix
 	{
-		private int [][] _matr;
+		private double [][] _matr;
 		private int _m;
 		private int _n;
 		public Matrix (int n, int m)
@@ -13,9 +13,9 @@ namespace CG4
 				throw new Exception ("size>0");
 			_m = m;
 			_n = n;
-			_matr = new int[_m][];
+			_matr = new double[_m][];
 			for (int i = 0; i < _m; i++)
-				_matr [i] = new int[_n];
+				_matr [i] = new double[_n];
 		}
 
 		public void Print(){
@@ -30,12 +30,12 @@ namespace CG4
 				
 		}
 
-		public void Set(int x, int i, int j){
+		public void Set(double x, int i, int j){
 			if (i > _m || j > _n || i < 0 || j < 0)
 				throw new Exception ();
 			_matr [i] [j] = x;
 		}
-		public int Get(int i, int j){
+		public double Get(int i, int j){
 			if (i > _m || j > _n || i < 0 || j < 0)
 				throw new Exception ();
 			return _matr [i] [j];
@@ -60,6 +60,31 @@ namespace CG4
 
 			res.Print ();
 			return res;
+		}
+		public Point ToPoint(){
+			if (_m >= 3) {
+				return new Point (_matr [0] [0] / _matr [2] [0], _matr [1] [0] / _matr [2] [0]);
+			} else {
+				return new Point (_matr [0] [0] / _matr [0] [2], _matr [0] [1] / _matr [0] [2]);
+			}
+		}
+		public static Matrix Smestchenie(int x, int y){
+			Matrix p=new Matrix(3,3);
+			p.Set(1,0,0);
+			p.Set(1,1,1);
+			p.Set(1,2,2);
+			p.Set(x, 2,0);
+			p.Set(y,2,1);
+			return p;
+		}
+		public static Matrix Povorot(double x){
+			Matrix p = new Matrix(3,3);
+			p.Set (Math.Cos (x), 0, 0);
+			p.Set (Math.Sin (x), 0, 1);
+			p.Set (Math.Sin (x) * (-1), 1, 0);
+			p.Set (Math.Cos (x), 1, 1);
+			p.Set (1, 2, 2);
+			return p;
 		}
 	}
 }
