@@ -35,6 +35,17 @@ namespace CG4
 				throw new Exception ();
 			_matr [i] [j] = x;
 		}
+		public int Get(int i, int j){
+			if (i > _m || j > _n || i < 0 || j < 0)
+				throw new Exception ();
+			return _matr [i] [j];
+		}
+		public int M(){
+			return _m;
+		}
+		public int N(){
+			return _n;
+		}
 
 		public Matrix Mult(Matrix m2){
 			Matrix res = new Matrix(m2._n, _m);
