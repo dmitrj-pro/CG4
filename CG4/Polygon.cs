@@ -8,5 +8,9 @@ namespace CG4
 {
     class Polygon
     {
+        public override string ToString()
+        {
+            return "Многоугольник";
+        }
     }
 }

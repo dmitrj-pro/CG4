@@ -8,5 +8,9 @@ namespace CG4
 {
     class Edge
     {
+        public override string ToString()
+        {
+            return "Ребро";
+        }
     }
 }
