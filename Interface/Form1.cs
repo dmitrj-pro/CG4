@@ -22,6 +22,8 @@ namespace Interface
             g = Graphics.FromImage(pictureBox1.Image);
             g.Clear(Color.Bisque);
             PlotAxes();
+            //Pen pen = new Pen(Color.Blue);
+            //g.DrawRectangle(pen, ToValidPoint(-10, -10).X, ToValidPoint(-10, -10).Y, 10, 10);
         }
 
         private void PlotAxes()
@@ -39,6 +41,16 @@ namespace Interface
             p2.X = pictureBox1.Width;
             p2.Y = pictureBox1.Height / 2;
             g.DrawLine(pen, p1, p2);
+        }
+
+        Point ToValidPoint(int x, int y)
+        {
+            return new Point(x + pictureBox1.Width / 2, -1 * y + pictureBox1.Height / 2);
+        }
+
+        private void clear_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
