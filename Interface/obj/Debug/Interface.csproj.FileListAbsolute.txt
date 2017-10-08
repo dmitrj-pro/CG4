@@ -1,0 +1,9 @@
+C:\Programming\C#\CG4\Interface\bin\Debug\Interface.exe.config
+C:\Programming\C#\CG4\Interface\bin\Debug\Interface.exe
+C:\Programming\C#\CG4\Interface\bin\Debug\Interface.pdb
+C:\Programming\C#\CG4\Interface\obj\Debug\Interface.csprojResolveAssemblyReference.cache
+C:\Programming\C#\CG4\Interface\obj\Debug\Interface.Form1.resources
+C:\Programming\C#\CG4\Interface\obj\Debug\Interface.Properties.Resources.resources
+C:\Programming\C#\CG4\Interface\obj\Debug\Interface.csproj.GenerateResource.Cache
+C:\Programming\C#\CG4\Interface\obj\Debug\Interface.exe
+C:\Programming\C#\CG4\Interface\obj\Debug\Interface.pdb
