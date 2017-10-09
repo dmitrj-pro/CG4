@@ -107,6 +107,44 @@ namespace CG4
 				tmp.Print ();
 				ToMatrix (tmp, 7, 7).Print();
 			}
+			Console.WriteLine();
+			Console.WriteLine ("Точка в многоугольнике");
+			Console.WriteLine ();
+			{
+				Figure f1 = new Figure ();
+				f1.Add (new Point (1, 1));
+				f1.Add (new Point (1, 4));
+				f1.Add (new Point (4, 6));
+				f1.Add (new Point (4, 2));
+				f1.Add (new Point (1, 1));
+
+				Point tmp = new Point (2, 4);
+
+				Figure.PointInPolygon res = f1.pointInFigure (tmp);
+
+				Point tmp2 = new Point (6, 6);
+
+				Figure.PointInPolygon res2 = f1.pointInFigure (tmp2);
+
+
+				if (res==Figure.PointInPolygon.INSIDE)
+					Console.WriteLine ("In");
+				if (res == Figure.PointInPolygon.BOUNDARY)
+					Console.WriteLine ("На границе");
+				if (res == Figure.PointInPolygon.OUTSIDE)
+					Console.WriteLine ("Вне");
+
+				if (res2==Figure.PointInPolygon.INSIDE)
+					Console.WriteLine ("In");
+				if (res2 == Figure.PointInPolygon.BOUNDARY)
+					Console.WriteLine ("На границе");
+				if (res2 == Figure.PointInPolygon.OUTSIDE)
+					Console.WriteLine ("Вне");
+
+				f1.Add (tmp);
+				f1.Add (tmp2);
+				ToMatrix (f1, 7, 7).Print ();
+			}
 		}
 	}
 }

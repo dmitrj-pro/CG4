@@ -75,6 +75,7 @@ namespace CG4
 			tmp.y = (p1.y + p2.y) / 2;
 			return Figure.povorotPoint (f, tmp, ug);
 		}
+		//54637276
 		public static Point GetPoint(Figure f1, Figure f2){
 			if (f1.points.Count != f2.points.Count)
 				throw new Exception ("this is not lines");
@@ -91,6 +92,69 @@ namespace CG4
 					*(f2.points[1].x-f2.points[0].x)-(f2.points[0].y-f2.points[1].y)*(f1.points[1].x-f1.points[0].x)); 
 			res.y = ((f2.points[0].y-f2.points[1].y)*(-res.x)-(f2.points[0].x*f2.points[1].y-f2.points[1].x*f2.points[0].y))/(f2.points[1].x-f2.points[0].x); 
 			return res;
+		}
+		public enum PointOverEdge { LEFT, RIGHT, BETWEEN, OUTSIDE } //положение точки относительно отрезка
+		public static PointOverEdge classify(Point p, Point v, Point w) //положение точки p относительно отрезка vw
+		{
+			//коэффициенты уравнения прямой
+			double a = v.y - w.y;
+			double b = w.x - v.x;
+			double c = v.x * w.y - w.x * v.y;
+
+			//подставим точку в уравнение прямой
+			double f = a * p.x + b * p.y + c;
+			if (f > 0)
+				return PointOverEdge.RIGHT; //точка лежит справа от отрезка
+			if (f < 0)
+				return PointOverEdge.LEFT; //слева от отрезка
+
+			double minX = Math.Min(v.x, w.x);
+			double maxX = Math.Max(v.x, w.x);
+			double minY = Math.Min(v.y, w.y);
+			double maxY = Math.Max(v.y, w.y);
+
+			if (minX <= p.x && p.x <= maxX && minY <= p.y && p.y <= maxY)
+				return PointOverEdge.BETWEEN; //точка лежит на отрезке
+			return PointOverEdge.OUTSIDE; //точка лежит на прямой, но не на отрезке
+		}
+
+		private enum EdgeType { TOUCHING, CROSSING, INESSENTIAL } //положение ребра
+
+		private static EdgeType edgeType(Point a, Point v, Point w) //тип ребра vw для точки a
+		{
+			switch (classify(a, v, w))
+			{
+				case PointOverEdge.LEFT:
+					return ((v.y < a.y) && (a.y <= w.y)) ? EdgeType.CROSSING : EdgeType.INESSENTIAL;
+				case PointOverEdge.RIGHT:
+					return ((w.y < a.y) && (a.y <= v.y)) ? EdgeType.CROSSING : EdgeType.INESSENTIAL;
+				case PointOverEdge.BETWEEN:
+					return EdgeType.TOUCHING;
+				default:
+					return EdgeType.INESSENTIAL;
+			}
+		}
+		public enum PointInPolygon { INSIDE, OUTSIDE, BOUNDARY } //положение точки в многоугольнике
+
+		public PointInPolygon pointInFigure(Point a) //положение точки в многоугольнике
+		{
+			bool parity = true;
+			for (int i = 0; i < points.Count; i++)
+			{
+				Point v = points[i];
+				Point w = points[(i + 1) % points.Count];
+
+				switch (edgeType(a, v, w))
+				{
+					case EdgeType.TOUCHING:
+						return PointInPolygon.BOUNDARY;
+					case EdgeType.CROSSING:
+						parity = !parity;
+						break;
+				}
+			}
+
+			return parity ? PointInPolygon.OUTSIDE : PointInPolygon.INSIDE;
 		}
 	}
 }
