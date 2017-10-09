@@ -86,6 +86,13 @@ namespace CG4
 			p.Set (1, 2, 2);
 			return p;
 		}
+		public static Matrix Size(double k){
+			Matrix p =new Matrix(3,3);
+			p.Set (k, 0, 0);
+			p.Set (k, 1, 1);
+			p.Set (1, 2, 2);
+			return p;
+		}
 	}
 }
 
