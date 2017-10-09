@@ -7,3 +7,5 @@ C:\Programming\C#\CG4\Interface\obj\Debug\Interface.Properties.Resources.resourc
 C:\Programming\C#\CG4\Interface\obj\Debug\Interface.csproj.GenerateResource.Cache
 C:\Programming\C#\CG4\Interface\obj\Debug\Interface.exe
 C:\Programming\C#\CG4\Interface\obj\Debug\Interface.pdb
+C:\Programming\C#\CG4\Interface\bin\Debug\CG4.exe
+C:\Programming\C#\CG4\Interface\bin\Debug\CG4.pdb

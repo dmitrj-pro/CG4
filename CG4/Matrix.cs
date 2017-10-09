@@ -60,11 +60,11 @@ namespace CG4
 
 			return res;
 		}
-		public Point ToPoint(){
+		public CustomPoint ToPoint(){
 			if (_m >= 3) {
-				return new Point (_matr [0] [0] / _matr [2] [0], _matr [1] [0] / _matr [2] [0]);
+				return new CustomPoint (_matr [0] [0] / _matr [2] [0], _matr [1] [0] / _matr [2] [0]);
 			} else {
-				return new Point (_matr [0] [0] / _matr [0] [2], _matr [0] [1] / _matr [0] [2]);
+				return new CustomPoint (_matr [0] [0] / _matr [0] [2], _matr [0] [1] / _matr [0] [2]);
 			}
 		}
 		public static Matrix Smestchenie(int x, int y){

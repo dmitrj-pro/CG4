@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CG4;
 
 namespace Interface
 {
@@ -18,6 +19,8 @@ namespace Interface
         private int Mode;
 
         private int CurrPanel;
+
+        private Figure f; 
 
         public Form1()
         {
@@ -52,8 +55,8 @@ namespace Interface
         private void PlotAxes()
         {
             Pen pen = new Pen(Color.Black);
-            Point p1 = new Point();
-            Point p2 = new Point();
+            System.Drawing.Point p1 = new System.Drawing.Point();
+            System.Drawing.Point p2 = new System.Drawing.Point();
             p1.X = pictureBox1.Width / 2;
             p1.Y = 0;
             p2.X = pictureBox1.Width / 2;
@@ -68,11 +71,22 @@ namespace Interface
 
         Point ToValidPoint(int x, int y)
         {
-            return new Point(x + pictureBox1.Width / 2, -1 * y + pictureBox1.Height / 2);
+            return new System.Drawing.Point(x + pictureBox1.Width / 2, -1 * y + pictureBox1.Height / 2);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            Graphics g = Graphics.FromImage(pictureBox1.Image);
+            Point[] points = new Point[f.Points().Count];
+            int i = 0;
+            foreach(var p in f.Points())
+            {
+                points[i] = new Point(Convert.ToInt16(p.x), Convert.ToInt16(p.y));
+                i += 1;
+            }
+            Pen pen = new Pen(Color.Red);
+            g.DrawPolygon(pen, points);
+            pictureBox1.Invalidate();
             panel1.Controls.Clear();
             panel2.Controls.Clear();
             comboBox2.Items.Clear();
@@ -103,7 +117,9 @@ namespace Interface
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+            ClearPB();
             button1.Enabled = true;
+            f = new Figure();
             if (comboBox1.SelectedIndex == 0)
             {
                 Mode = 0;
@@ -114,12 +130,17 @@ namespace Interface
             }
         }
 
-        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ClearPB()
         {
             pictureBox1.Image = new Bitmap(pictureBox1.Width, pictureBox1.Height);
             G = Graphics.FromImage(pictureBox1.Image);
             G.Clear(Color.Bisque);
             PlotAxes();
+        }
+
+        private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ClearPB();
             comboBox1.SelectedItem = null;
             comboBox2.SelectedItem = null;
             comboBox3.SelectedItem = null;
@@ -399,6 +420,20 @@ namespace Interface
 
         private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
         {
+            if(CurrPanel == 0)
+            {
+                if(Mode == 1)
+                {
+                    f.Add(new CustomPoint(e.X, e.Y));
+                }
+                else
+                {
+                    if (f.Points().Count < 2) 
+                    {
+                        f.Add(new CustomPoint(e.X, e.Y));
+                    }
+                }
+            }
             if (CurrPanel == 1)
             {
                 if (comboBox2.SelectedIndex == 1)

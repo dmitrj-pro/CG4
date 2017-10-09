@@ -5,22 +5,22 @@ namespace CG4
 {
 	public class Figure
 	{
-		List<Point> points;
+		List<CustomPoint> points;
 		public Figure ()
 		{
-			points = new List<Point> ();
+			points = new List<CustomPoint> ();
 		}
-		public void Add(Point t){
+		public void Add(CustomPoint t){
 			points.Add (t);
 		}
-		public List<Point> Points(){
+		public List<CustomPoint> Points(){
 			return points;
 		}
 		//Параллельное смещение фигуры
 		public static Figure Smestchenie(Figure f, int x,int y){
 			Figure res = new Figure ();
 			for (int i = 0; i < f.points.Count; i++) {
-				res.Add (Point.Smestchenie (f.points [i], x, y));
+				res.Add (CustomPoint.Smestchenie (f.points [i], x, y));
 			}
 			return res;
 		}
@@ -28,7 +28,7 @@ namespace CG4
 		public static Figure Povorot(Figure f, double x){
 			Figure res = new Figure ();
 			for (int i = 0; i < f.points.Count; i++) {
-				res.Add (Point.Povorot (f.points [i], x));
+				res.Add (CustomPoint.Povorot (f.points [i], x));
 			}
 			return res;
 		}
@@ -37,26 +37,26 @@ namespace CG4
 		public static Figure Size(Figure f, double size){
 			Figure res = new Figure ();
 			for (int i = 0; i < f.points.Count; i++) {
-				res.Add (Point.Size (f.points [i], size));
+				res.Add (CustomPoint.Size (f.points [i], size));
 			}
 			return res;
 		}
 		//Поворот фигуры вокруг точки
-		public static Figure povorotPoint(Figure f, Point p, double ug){
+		public static Figure povorotPoint(Figure f, CustomPoint p, double ug){
 			if (f.points.Count != 2)
 				throw new Exception ("This is not line");
-			Point p1 = f.points [0];
-			Point p2 = f.points [1];
+			CustomPoint p1 = f.points [0];
+			CustomPoint p2 = f.points [1];
 			Figure res = new Figure ();
-			Point tmp = p;
-			p1 = Point.Smestchenie (p1, (int)((-1) * tmp.x), (int)((-1) * tmp.y));
-			p2 = Point.Smestchenie (p2, (int)((-1) * tmp.x), (int)((-1) * tmp.y));
+			CustomPoint tmp = p;
+			p1 = CustomPoint.Smestchenie (p1, (int)((-1) * tmp.x), (int)((-1) * tmp.y));
+			p2 = CustomPoint.Smestchenie (p2, (int)((-1) * tmp.x), (int)((-1) * tmp.y));
 
-			p1 = Point.Povorot (p1, ug);
-			p2 = Point.Povorot (p2, ug);
+			p1 = CustomPoint.Povorot (p1, ug);
+			p2 = CustomPoint.Povorot (p2, ug);
 
-			p1 = Point.Smestchenie (p1, (int)tmp.x, (int)tmp.y);
-			p2 = Point.Smestchenie (p2, (int)tmp.x, (int)tmp.y);
+			p1 = CustomPoint.Smestchenie (p1, (int)tmp.x, (int)tmp.y);
+			p2 = CustomPoint.Smestchenie (p2, (int)tmp.x, (int)tmp.y);
 
 			res.Add (p1);
 			res.Add (p2);
@@ -67,16 +67,16 @@ namespace CG4
 		public static Figure PovorotInZentr(Figure f, double ug){
 			if (f.points.Count != 2)
 				throw new Exception ("This is not line");
-			Point p1 = f.points [0];
-			Point p2 = f.points [1];
+			CustomPoint p1 = f.points [0];
+			CustomPoint p2 = f.points [1];
 
-			Point tmp = new Point();
+			CustomPoint tmp = new CustomPoint();
 			tmp.x = (p1.x + p2.x) / 2;
 			tmp.y = (p1.y + p2.y) / 2;
 			return Figure.povorotPoint (f, tmp, ug);
 		}
 		//54637276
-		public static Point GetPoint(Figure f1, Figure f2){
+		public static CustomPoint GetPoint(Figure f1, Figure f2){
 			if (f1.points.Count != f2.points.Count)
 				throw new Exception ("this is not lines");
 			if (f1.points.Count != 2)
@@ -85,7 +85,7 @@ namespace CG4
 			double tg2 = (f2.points[1].x-f2.points[0].x)/(f2.points[1].y-f2.points[0].y);
 			if (tg1==tg2)
 				throw new Exception ("Lines is parallel");
-			Point res = new Point ();
+			CustomPoint res = new CustomPoint ();
 			res.x = -((f1.points[0].x*f1.points[1].y-f1.points[1].x*f1.points[0].y) 
 				*(f2.points[1].x-f2.points[0].x)-(f2.points[0].x*f2.points[1].y-f2.points[1].x*f2.points[0].y) 
 				*(f1.points[1].x-f1.points[0].x))/((f1.points[0].y-f1.points[1].y) 
@@ -94,7 +94,7 @@ namespace CG4
 			return res;
 		}
 		public enum PointOverEdge { LEFT, RIGHT, BETWEEN, OUTSIDE } //положение точки относительно отрезка
-		public static PointOverEdge classify(Point p, Point v, Point w) //положение точки p относительно отрезка vw
+		public static PointOverEdge classify(CustomPoint p, CustomPoint v, CustomPoint w) //положение точки p относительно отрезка vw
 		{
 			//коэффициенты уравнения прямой
 			double a = v.y - w.y;
@@ -120,7 +120,7 @@ namespace CG4
 
 		private enum EdgeType { TOUCHING, CROSSING, INESSENTIAL } //положение ребра
 
-		private static EdgeType edgeType(Point a, Point v, Point w) //тип ребра vw для точки a
+		private static EdgeType edgeType(CustomPoint a, CustomPoint v, CustomPoint w) //тип ребра vw для точки a
 		{
 			switch (classify(a, v, w))
 			{
@@ -136,13 +136,13 @@ namespace CG4
 		}
 		public enum PointInPolygon { INSIDE, OUTSIDE, BOUNDARY } //положение точки в многоугольнике
 
-		public PointInPolygon pointInFigure(Point a) //положение точки в многоугольнике
+		public PointInPolygon pointInFigure(CustomPoint a) //положение точки в многоугольнике
 		{
 			bool parity = true;
 			for (int i = 0; i < points.Count; i++)
 			{
-				Point v = points[i];
-				Point w = points[(i + 1) % points.Count];
+				CustomPoint v = points[i];
+				CustomPoint w = points[(i + 1) % points.Count];
 
 				switch (edgeType(a, v, w))
 				{

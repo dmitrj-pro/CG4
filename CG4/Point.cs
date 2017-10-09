@@ -2,14 +2,14 @@
 
 namespace CG4
 {
-	public class Point
+	public class CustomPoint
 	{
 		public double x;
 		public double y;
-		public Point ()
+		public CustomPoint ()
 		{
 		}
-		public Point (double _x, double _y)
+		public CustomPoint (double _x, double _y)
 		{
 			x = _x;
 			y = _y;
@@ -30,15 +30,15 @@ namespace CG4
 			Console.WriteLine (")");
 		}
 		//Параллельное смещение
-		public static Point Smestchenie(Point point, int x, int y){
+		public static CustomPoint Smestchenie(CustomPoint point, int x, int y){
 			return point.ToMatrix ().Mult (Matrix.Smestchenie (x, y)).ToPoint ();
 		}
 		//Поворот вокруг оси координат
-		public static Point Povorot(Point p, double x){
+		public static CustomPoint Povorot(CustomPoint p, double x){
 			return p.ToMatrix().Mult(Matrix.Povorot(x)).ToPoint();
 		}
 		//Масштабирование
-		public static Point Size(Point p, double size){
+		public static CustomPoint Size(CustomPoint p, double size){
 			return p.ToMatrix().Mult(Matrix.Size(size)).ToPoint();
 		}
 	}
