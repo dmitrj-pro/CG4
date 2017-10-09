@@ -17,6 +17,8 @@ namespace Interface
 
         private int Mode;
 
+        private int CurrPanel;
+
         public Form1()
         {
             InitializeComponent();
@@ -119,7 +121,10 @@ namespace Interface
             G.Clear(Color.Bisque);
             PlotAxes();
             comboBox1.SelectedItem = null;
+            comboBox2.SelectedItem = null;
+            comboBox3.SelectedItem = null;
             panel1.Controls.Clear();
+            panel2.Controls.Clear();
             button1.Enabled = false;
             tabPage2.Enabled = false;
             tabPage3.Enabled = false;
@@ -394,74 +399,93 @@ namespace Interface
 
         private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
         {
-            if (comboBox2.SelectedIndex == 1)
+            if (CurrPanel == 1)
             {
-
-                if (FindControl(panel1, "cb1") != null)
+                if (comboBox2.SelectedIndex == 1)
                 {
-                    if (!(FindControl(panel1, "cb1") as CheckBox).Checked)
+
+                    if (FindControl(panel1, "cb1") != null)
+                    {
+                        if (!(FindControl(panel1, "cb1") as CheckBox).Checked)
+                        {
+                            Label l11 = FindControl(panel1, "l11") as Label;
+                            Label l12 = FindControl(panel1, "l12") as Label;
+                            Button b1 = FindControl(panel1, "b1") as Button;
+                            b1.Enabled = true;
+                            if (e.Button == MouseButtons.Left)
+                            {
+                                l11.Text = "X: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
+                                l12.Text = "Y: " + ToValidPoint(e.X, e.Y).Y.ToString();
+                            }
+                        }
+                    }
+                    else
                     {
                         Label l11 = FindControl(panel1, "l11") as Label;
                         Label l12 = FindControl(panel1, "l12") as Label;
                         Button b1 = FindControl(panel1, "b1") as Button;
                         b1.Enabled = true;
-                        l11.Text = "X: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
-                        l12.Text = "Y: " + ToValidPoint(e.X, e.Y).Y.ToString();
+                        if (e.Button == MouseButtons.Left)
+                        {
+                            l11.Text = "X: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
+                            l12.Text = "Y: " + ToValidPoint(e.X, e.Y).Y.ToString();
+                        }
+                    }
+                }
+
+                if (Mode == 0)
+                {
+                    if (comboBox2.SelectedIndex == 3)
+                    {
+                        Button b3 = FindControl(panel1, "b3") as Button;
+                        Label l31 = FindControl(panel1, "l31") as Label;
+                        Label l32 = FindControl(panel1, "l32") as Label;
+                        Label l33 = FindControl(panel1, "l33") as Label;
+                        Label l34 = FindControl(panel1, "l34") as Label;
+                        if (e.Button == MouseButtons.Left)
+                        {
+                            l31.Text = "X1: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
+                            l32.Text = "Y1: " + ToValidPoint(e.X, e.Y).Y.ToString();
+                        }
+                        if (e.Button == MouseButtons.Right)
+                        {
+                            l33.Text = "X2: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
+                            l34.Text = "Y2: " + ToValidPoint(e.X, e.Y).Y.ToString();
+                            b3.Enabled = true;
+                        }
+                    }
+                }
+            }
+            if(CurrPanel == 2)
+            {
+                if (Mode == 1)
+                {
+                    if (comboBox3.SelectedIndex == 0)
+                    {
+                        Label l21 = FindControl(panel2, "l21") as Label;
+                        Label l22 = FindControl(panel2, "l22") as Label;
+                        Button b5 = FindControl(panel2, "b5") as Button;
+                        if (e.Button == MouseButtons.Left)
+                        {
+                            l21.Text = "X: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
+                            l22.Text = "Y: " + ToValidPoint(e.X, e.Y).Y.ToString();
+                        }
+                        b5.Enabled = true;
                     }
                 }
                 else
                 {
-                    Label l11 = FindControl(panel1, "l11") as Label;
-                    Label l12 = FindControl(panel1, "l12") as Label;
-                    Button b1 = FindControl(panel1, "b1") as Button;
-                    b1.Enabled = true;
-                    l11.Text = "X: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
-                    l12.Text = "Y: " + ToValidPoint(e.X, e.Y).Y.ToString();
-                }
-            }
-
-            if(Mode == 0)
-            {
-                if(comboBox2.SelectedIndex == 3)
-                {
-                    Button b3 = FindControl(panel1, "b3") as Button;
-                    Label l31 = FindControl(panel1, "l31") as Label;
-                    Label l32 = FindControl(panel1, "l32") as Label;
-                    Label l33 = FindControl(panel1, "l33") as Label;
-                    Label l34 = FindControl(panel1, "l34") as Label;
-                    if (e.Button == MouseButtons.Left)
+                    if (comboBox3.SelectedIndex == 0)
                     {
-                        l31.Text = "X1: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
-                        l32.Text = "Y1: " + ToValidPoint(e.X, e.Y).Y.ToString();
+                        Label l11 = FindControl(panel2, "l11") as Label;
+                        Label l12 = FindControl(panel2, "l12") as Label;
+                        Button b4 = FindControl(panel2, "b4") as Button;
+                        {
+                            l11.Text = "X: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
+                            l12.Text = "Y: " + ToValidPoint(e.X, e.Y).Y.ToString();
+                        }
+                        b4.Enabled = true;
                     }
-                    if(e.Button == MouseButtons.Right)
-                    {
-                        l33.Text = "X2: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
-                        l34.Text = "Y2: " + ToValidPoint(e.X, e.Y).Y.ToString();
-                        b3.Enabled = true;
-                    }
-                }
-
-                if(comboBox3.SelectedIndex == 0)
-                {
-                    Label l11 = FindControl(panel2, "l11") as Label;
-                    Label l12 = FindControl(panel2, "l12") as Label;
-                    Button b4 = FindControl(panel2, "b4") as Button;
-                    l11.Text = "X: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
-                    l12.Text = "Y: " + ToValidPoint(e.X, e.Y).Y.ToString();
-                    b4.Enabled = true;
-                }
-            }
-            if(Mode == 1)
-            {
-                if (comboBox3.SelectedIndex == 0)
-                {
-                    Label l21 = FindControl(panel2, "l21") as Label;
-                    Label l22 = FindControl(panel2, "l22") as Label;
-                    Button b5 = FindControl(panel2, "b5") as Button;
-                    l21.Text = "X: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
-                    l22.Text = "Y: " + ToValidPoint(e.X, e.Y).Y.ToString();
-                    b5.Enabled = true;
                 }
             }
         }
@@ -549,6 +573,11 @@ namespace Interface
         private void B4_Click(object sender, EventArgs e)
         {
             
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CurrPanel = tabControl1.SelectedIndex;
         }
     }
 }
