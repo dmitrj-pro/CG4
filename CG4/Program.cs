@@ -74,6 +74,39 @@ namespace CG4
 			{
 				ToMatrix (Figure.Povorot (f, 0.4), 7, 7).Print ();
 			}
+			Console.WriteLine();
+			Console.WriteLine ("Поворот вокруг оси");
+			Console.WriteLine ();
+			{
+				Figure fig = new Figure ();
+				fig.Add (new Point (2, 2));
+				fig.Add (new Point (4, 6));
+				ToMatrix (fig, 7, 7).Print();
+				Console.WriteLine ();
+				ToMatrix (Figure.PovorotInZentr (fig, -1),7,7).Print ();
+				Console.WriteLine ();
+				ToMatrix (Figure.PovorotInZentr (fig, -3.14/2),7,7).Print ();
+				Console.WriteLine ();
+				ToMatrix (Figure.povorotPoint (fig, new Point (4, 4),-3.14/2), 7, 7).Print ();
+			}
+			Console.WriteLine();
+			Console.WriteLine ("Точка пересечения");
+			Console.WriteLine ();
+			{
+				Figure f1 = new Figure ();
+				f1.Add (new Point (3, 1));
+				f1.Add (new Point (3, 6));
+				ToMatrix (f1, 7, 7).Print ();
+				Console.WriteLine ();
+				Figure f2 = new Figure ();
+				f2.Add (new Point (1, 3));
+				f2.Add (new Point (6, 3));
+				ToMatrix (f2, 7, 7).Print ();
+				Console.WriteLine ();
+				Point tmp = Figure.GetPoint (f1, f2);
+				tmp.Print ();
+				ToMatrix (tmp, 7, 7).Print();
+			}
 		}
 	}
 }

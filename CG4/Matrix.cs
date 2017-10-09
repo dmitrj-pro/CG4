@@ -58,7 +58,6 @@ namespace CG4
 				}
 			}
 
-			res.Print ();
 			return res;
 		}
 		public Point ToPoint(){
