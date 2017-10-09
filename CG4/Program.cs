@@ -64,15 +64,15 @@ namespace CG4
 			f.Add (new CustomPoint (3, 3));
 			ToMatrix (f, 7, 7).Print ();
 			{
-				ToMatrix (Figure.Smestchenie (f, 2, 3), 7, 7).Print ();
+				ToMatrix (Figure.Displacement (f, 2, 3), 7, 7).Print ();
 			}
 			Console.WriteLine ();
 			{
-				ToMatrix (Figure.Size (f, 0.5), 7, 7).Print ();
+				ToMatrix (Figure.Scale (f, 0.5), 7, 7).Print ();
 			}
 			Console.WriteLine ();
 			{
-				ToMatrix (Figure.Povorot (f, 0.4), 7, 7).Print ();
+				ToMatrix (Figure.Rotation (f, 0.4), 7, 7).Print ();
 			}
 			Console.WriteLine();
 			Console.WriteLine ("Поворот вокруг оси");
@@ -83,11 +83,11 @@ namespace CG4
 				fig.Add (new CustomPoint (4, 6));
 				ToMatrix (fig, 7, 7).Print();
 				Console.WriteLine ();
-				ToMatrix (Figure.PovorotInZentr (fig, -1),7,7).Print ();
+				ToMatrix (Figure.RotationLine (fig, -1),7,7).Print ();
 				Console.WriteLine ();
-				ToMatrix (Figure.PovorotInZentr (fig, -3.14/2),7,7).Print ();
+				ToMatrix (Figure.RotationLine (fig, -3.14/2),7,7).Print ();
 				Console.WriteLine ();
-				ToMatrix (Figure.povorotPoint (fig, new CustomPoint (4, 4),-3.14/2), 7, 7).Print ();
+				ToMatrix (Figure.RotationPoint (fig, new CustomPoint (4, 4),-3.14/2), 7, 7).Print ();
 			}
 			Console.WriteLine();
 			Console.WriteLine ("Точка пересечения");

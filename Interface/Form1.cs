@@ -413,7 +413,7 @@ namespace Interface
             int y;
             int.TryParse(t0x.Text, out x);
             int.TryParse(t0y.Text, out y);
-
+            f.s
             //Вот тут вызываем соответствующую функцию смещения
             //todo
         }
