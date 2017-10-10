@@ -272,6 +272,11 @@ namespace Interface
 
                     l12.Location = new Point(120, 80);
 
+                    panel1.Controls.Add(l11);
+
+                    panel1.Controls.Add(l12);
+
+
                 }
                 else
                 {
@@ -288,8 +293,6 @@ namespace Interface
                 panel1.Controls.Add(l1);
                 panel1.Controls.Add(t1);
                 panel1.Controls.Add(b1);
-                panel1.Controls.Add(l11);
-                panel1.Controls.Add(l12);
             }
 
             if (comboBox2.SelectedIndex == 2)
@@ -389,7 +392,7 @@ namespace Interface
             Figure f2 = new Figure();
             f2.Add(new CustomPoint(x1, y1));
             f2.Add(new CustomPoint(x2, y2));
-            var res = Figure.GetPoint(f, f2);
+            var res = Figure.Intersection(f, f2);
             l35.Text = "Result: " + (res.x).ToString("F0") + "; " + (res.y).ToString("F0");
 			Graphics g = Graphics.FromImage(pictureBox1.Image);
 			Point[] points = new Point[2];
@@ -428,17 +431,17 @@ namespace Interface
 
         private void B1_Click(object sender, EventArgs e)
         {
-            Label l11 = FindControl(panel1, "l11") as Label;
-            Label l12 = FindControl(panel1, "l12") as Label;
             TextBox t1 = FindControl(panel1, "t1") as TextBox;
-            int x;
-            int y;
             int angle;
             int.TryParse(t1.Text, out angle);
-            int.TryParse(l11.Text.Split(' ')[1], out x);
-            int.TryParse(l12.Text.Split(' ')[1], out y);
             if (Mode == 0)
             {
+                Label l11 = FindControl(panel1, "l11") as Label;
+                Label l12 = FindControl(panel1, "l12") as Label;
+                int x;
+                int y;
+                int.TryParse(l11.Text.Split(' ')[1], out x);
+                int.TryParse(l12.Text.Split(' ')[1], out y);
                 if (!(FindControl(panel1, "cb1") as CheckBox).Checked)
                 {
                     f = Figure.RotationPoint(f, new CustomPoint(x, y), angle);
@@ -489,6 +492,7 @@ namespace Interface
 						//f.Add(new CustomPoint(e.X, e.Y));
 						f.Add(new CustomPoint(ToDekartX(e.X), ToDekartY(e.Y)));
                         g.DrawRectangle(pen, e.X, e.Y, 1, 1);
+                        pictureBox1.Invalidate();
                     }
                 }
 
@@ -668,7 +672,7 @@ namespace Interface
 			int y;
 			int.TryParse(l21.Text.Split(' ')[1], out x);
 			int.TryParse(l22.Text.Split(' ')[1], out y);
-			var res = f.pointInFigure(new CustomPoint(x, y));
+			var res = f.PointInFigure(new CustomPoint(x, y));
 			l23.Text = "Result: " + res.ToString();
 		}
 
@@ -681,7 +685,7 @@ namespace Interface
 			int y;
 			int.TryParse(l11.Text.Split(' ')[1], out x);
 			int.TryParse(l12.Text.Split(' ')[1], out y);
-			var res = Figure.classify(new CustomPoint(x, y), new CustomPoint(f.Points()[0].x, f.Points()[0].y), new CustomPoint(f.Points()[1].x, f.Points()[1].y));
+			var res = Figure.Classification(new CustomPoint(x, y), new CustomPoint(f.Points()[0].x, f.Points()[0].y), new CustomPoint(f.Points()[1].x, f.Points()[1].y));
 			l13.Text = "Result: " + res.ToString();
 		}
 

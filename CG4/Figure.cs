@@ -28,7 +28,7 @@ namespace CG4
             Figure res = new Figure();
             for (int i = 0; i < f.points.Count; i++)
             {
-                res.Add(CustomPoint.Smestchenie(f.points[i], x, y));
+                res.Add(CustomPoint.Displacement(f.points[i], x, y));
             }
             return res;
         }
@@ -45,7 +45,7 @@ namespace CG4
             Figure res = new Figure();
             for (int i = 0; i < f.points.Count; i++)
             {
-                res.Add(CustomPoint.Povorot(f.points[i], x));
+                res.Add(CustomPoint.Rotation(f.points[i], x));
             }
             return res;
         }
@@ -57,7 +57,7 @@ namespace CG4
             Figure res = new Figure();
             for (int i = 0; i < f.points.Count; i++)
             {
-                res.Add(CustomPoint.Size(f.points[i], size));
+                res.Add(CustomPoint.Scale(f.points[i], size));
             }
             return res;
         }
@@ -72,14 +72,14 @@ namespace CG4
             CustomPoint p2 = f.points[1];
             Figure res = new Figure();
             CustomPoint tmp = p;
-            p1 = CustomPoint.Smestchenie(p1, (int)((-1) * tmp.x), (int)((-1) * tmp.y));
-            p2 = CustomPoint.Smestchenie(p2, (int)((-1) * tmp.x), (int)((-1) * tmp.y));
+            p1 = CustomPoint.Displacement(p1, (int)((-1) * tmp.x), (int)((-1) * tmp.y));
+            p2 = CustomPoint.Displacement(p2, (int)((-1) * tmp.x), (int)((-1) * tmp.y));
 
-            p1 = CustomPoint.Povorot(p1, x);
-            p2 = CustomPoint.Povorot(p2, x);
+            p1 = CustomPoint.Rotation(p1, x);
+            p2 = CustomPoint.Rotation(p2, x);
 
-            p1 = CustomPoint.Smestchenie(p1, (int)tmp.x, (int)tmp.y);
-            p2 = CustomPoint.Smestchenie(p2, (int)tmp.x, (int)tmp.y);
+            p1 = CustomPoint.Displacement(p1, (int)tmp.x, (int)tmp.y);
+            p2 = CustomPoint.Displacement(p2, (int)tmp.x, (int)tmp.y);
 
             res.Add(p1);
             res.Add(p2);
@@ -102,8 +102,8 @@ namespace CG4
             return Figure.RotationPoint(f, tmp, angle);
         }
 
-        //54637276
-        public static CustomPoint GetPoint(Figure f1, Figure f2)
+        //поиск точки пересечения
+        public static CustomPoint Intersection(Figure f1, Figure f2)
         {
             if (f1.points.Count != f2.points.Count)
                 throw new Exception("this is not lines");
@@ -122,9 +122,11 @@ namespace CG4
             return res;
         }
 
-		public enum PointOverEdge { LEFT, RIGHT, BETWEEN, OUTSIDE } //положение точки относительно отрезка
+        //положение точки относительно отрезка
+        public enum PointOverEdge { LEFT, RIGHT, BETWEEN, OUTSIDE }
 
-        public static PointOverEdge classify(CustomPoint p, CustomPoint v, CustomPoint w) //положение точки p относительно отрезка vw
+        //положение точки p относительно отрезка vw
+        public static PointOverEdge Classification(CustomPoint p, CustomPoint v, CustomPoint w)
         {
             //коэффициенты уравнения прямой
             double a = v.y - w.y;
@@ -148,25 +150,29 @@ namespace CG4
             return PointOverEdge.OUTSIDE; //точка лежит на прямой, но не на отрезке
         }
 
-		private enum EdgeType { TOUCHING, CROSSING, INESSENTIAL } //положение ребра
+		private enum Position { TOUCHING, CROSSING, INESSENTIAL } //положение ребра
 
-        private static EdgeType edgeType(CustomPoint a, CustomPoint v, CustomPoint w) //тип ребра vw для точки a
+        //тип ребра vw для точки a
+        private static Position EdgeType(CustomPoint a, CustomPoint v, CustomPoint w)
         {
-            switch (classify(a, v, w))
+            switch (Classification(a, v, w))
             {
                 case PointOverEdge.LEFT:
-                    return ((v.y < a.y) && (a.y <= w.y)) ? EdgeType.CROSSING : EdgeType.INESSENTIAL;
+                    return ((v.y < a.y) && (a.y <= w.y)) ? Position.CROSSING : Position.INESSENTIAL;
                 case PointOverEdge.RIGHT:
-                    return ((w.y < a.y) && (a.y <= v.y)) ? EdgeType.CROSSING : EdgeType.INESSENTIAL;
+                    return ((w.y < a.y) && (a.y <= v.y)) ? Position.CROSSING : Position.INESSENTIAL;
                 case PointOverEdge.BETWEEN:
-                    return EdgeType.TOUCHING;
+                    return Position.TOUCHING;
                 default:
-                    return EdgeType.INESSENTIAL;
+                    return Position.INESSENTIAL;
             }
         }
-		public enum PointInPolygon { INSIDE, OUTSIDE, BOUNDARY } //положение точки в многоугольнике
 
-		public PointInPolygon pointInFigure(CustomPoint a) //положение точки в многоугольнике
+        //положение точки в многоугольнике
+        public enum PointInPolygon { INSIDE, OUTSIDE, BOUNDARY }
+
+        //положение точки в многоугольнике
+        public PointInPolygon PointInFigure(CustomPoint a)
 		{
 			bool parity = true;
             for (int i = 0; i < points.Count; i++)
@@ -174,11 +180,11 @@ namespace CG4
                 CustomPoint v = points[i];
                 CustomPoint w = points[(i + 1) % points.Count];
 
-                switch (edgeType(a, v, w))
+                switch (EdgeType(a, v, w))
                 {
-                    case EdgeType.TOUCHING:
+                    case Position.TOUCHING:
                         return PointInPolygon.BOUNDARY;
-                    case EdgeType.CROSSING:
+                    case Position.CROSSING:
                         parity = !parity;
                         break;
                 }
