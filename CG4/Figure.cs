@@ -33,9 +33,15 @@ namespace CG4
             return res;
         }
 
-        //Поворот фигуры на x РАДИАН
-        public static Figure Rotation(Figure f, double x)
+        private static double ToRadian(int degrees)
         {
+            return degrees * (Math.PI / 180);
+        }
+
+        //Поворот фигуры на x РАДИАН
+        public static Figure Rotation(Figure f, int angle)
+        {
+            double x = Figure.ToRadian(angle);
             Figure res = new Figure();
             for (int i = 0; i < f.points.Count; i++)
             {
@@ -57,8 +63,9 @@ namespace CG4
         }
 
         //Поворот фигуры вокруг точки
-        public static Figure RotationPoint(Figure f, CustomPoint p, double ug)
+        public static Figure RotationPoint(Figure f, CustomPoint p, int angle)
         {
+            double x = Figure.ToRadian(angle);
             if (f.points.Count != 2)
                 throw new Exception("This is not line");
             CustomPoint p1 = f.points[0];
@@ -68,8 +75,8 @@ namespace CG4
             p1 = CustomPoint.Smestchenie(p1, (int)((-1) * tmp.x), (int)((-1) * tmp.y));
             p2 = CustomPoint.Smestchenie(p2, (int)((-1) * tmp.x), (int)((-1) * tmp.y));
 
-            p1 = CustomPoint.Povorot(p1, ug);
-            p2 = CustomPoint.Povorot(p2, ug);
+            p1 = CustomPoint.Povorot(p1, x);
+            p2 = CustomPoint.Povorot(p2, x);
 
             p1 = CustomPoint.Smestchenie(p1, (int)tmp.x, (int)tmp.y);
             p2 = CustomPoint.Smestchenie(p2, (int)tmp.x, (int)tmp.y);
@@ -81,8 +88,9 @@ namespace CG4
 
         //Это поворот линии вокруг своего центра.
         //Если угол равен -3.14/2, то это поворот на 90 градусов
-        public static Figure RotationLine(Figure f, double ug)
+        public static Figure RotationLine(Figure f, int angle)
         {
+            double x = Figure.ToRadian(angle);
             if (f.points.Count != 2)
                 throw new Exception("This is not line");
             CustomPoint p1 = f.points[0];
@@ -91,7 +99,7 @@ namespace CG4
             CustomPoint tmp = new CustomPoint();
             tmp.x = (p1.x + p2.x) / 2;
             tmp.y = (p1.y + p2.y) / 2;
-            return Figure.RotationPoint(f, tmp, ug);
+            return Figure.RotationPoint(f, tmp, angle);
         }
 
         //54637276

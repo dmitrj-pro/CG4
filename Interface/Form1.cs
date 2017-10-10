@@ -74,7 +74,27 @@ namespace Interface
             return new System.Drawing.Point(x + pictureBox1.Width / 2, -1 * y + pictureBox1.Height / 2);
         }
 
-        private void RedrawPolygon(Figure f)
+		public int ToPictureBoxX(double x)
+		{
+			return Convert.ToInt32(x + pictureBox1.Width / 2);
+		}
+
+		public int ToPictureBoxY(double y)
+		{
+			return Convert.ToInt32(pictureBox1.Height - (y + pictureBox1.Height / 2));
+		}
+
+		public int ToDekartX(int x)
+		{
+			return x - pictureBox1.Width / 2;
+		}
+
+		public int ToDekartY(int y)
+		{
+			return pictureBox1.Height - y - pictureBox1.Height / 2;
+		}
+
+		private void RedrawPolygon(Figure f)
         {
             ClearPB();
             Graphics g = Graphics.FromImage(pictureBox1.Image);
@@ -82,7 +102,7 @@ namespace Interface
             int i = 0;
             foreach (var p in f.Points())
             {
-                points[i] = new Point(Convert.ToInt16(p.x), Convert.ToInt16(p.y));
+                points[i] = new Point(ToPictureBoxX(p.x), ToPictureBoxY(p.y));
                 i += 1;
             }
             Pen pen = new Pen(Color.Red);
@@ -370,10 +390,15 @@ namespace Interface
             f2.Add(new CustomPoint(x1, y1));
             f2.Add(new CustomPoint(x2, y2));
             var res = Figure.GetPoint(f, f2);
-            l35.Text = (res.x).ToString("F0") + "_" + (res.y).ToString("F0"); /*f.Points()[0].x + "_" + f.Points()[0].y + " " + f.Points()[1].x + "_" + f.Points()[1].y*/
-            //Вот тут вызываем соответствующую функцию поиска пересечения двух ребер
-            //todo
-        }
+            l35.Text = "Result: " + (res.x).ToString("F0") + "; " + (res.y).ToString("F0");
+			Graphics g = Graphics.FromImage(pictureBox1.Image);
+			Point[] points = new Point[2];
+			points[0] = new Point(ToPictureBoxX(x1), ToPictureBoxY(y1));
+			points[1] = new Point(ToPictureBoxX(x2), ToPictureBoxY(y2));
+			Pen pen = new Pen(Color.Blue);
+			g.DrawPolygon(pen, points);
+			pictureBox1.Invalidate();
+		}
 
         private void B2_Click(object sender, EventArgs e)
         {
@@ -382,8 +407,6 @@ namespace Interface
             double.TryParse(t2.Text, out scale);
             f = Figure.Scale(f, scale);
             RedrawPolygon(f);
-            //Вот тут вызываем соответствующую функцию масштабирования
-            //todo
         }
 
         private void Cb1_CheckedChanged(object sender, EventArgs e)
@@ -410,20 +433,19 @@ namespace Interface
             TextBox t1 = FindControl(panel1, "t1") as TextBox;
             int x;
             int y;
-            double angle;
-            double.TryParse(t1.Text, out angle);
+            int angle;
+            int.TryParse(t1.Text, out angle);
             int.TryParse(l11.Text.Split(' ')[1], out x);
             int.TryParse(l12.Text.Split(' ')[1], out y);
             if (Mode == 0)
             {
                 if (!(FindControl(panel1, "cb1") as CheckBox).Checked)
                 {
-                    //throw new Exception(x.ToString() + y.ToString() + angle.ToString());
                     f = Figure.RotationPoint(f, new CustomPoint(x, y), angle);
                 }
                 else
                 {
-                    f = Figure.RotationLine(f, -3.14/2);
+                    f = Figure.RotationLine(f, 90);
                 }
             }
             else
@@ -432,10 +454,6 @@ namespace Interface
             }
             
             RedrawPolygon(f);
-            //Figure.RotationPoint()
-            //Вот тут вызываем соответствующую функцию поворота
-            //todo
-
         }
 
         private void B0_Click(object sender, EventArgs e)
@@ -446,7 +464,7 @@ namespace Interface
             int y;
             int.TryParse(t0x.Text, out x);
             int.TryParse(t0y.Text, out y);
-            f = Figure.Displacement(f, x, -1 * y);
+            f = Figure.Displacement(f, x, y);
             RedrawPolygon(f);
         }
 
@@ -454,17 +472,26 @@ namespace Interface
         {
             if(CurrPanel == 0)
             {
-                if(Mode == 1)
+                Graphics g = Graphics.FromImage(pictureBox1.Image);
+                Pen pen = new Pen(Color.Red);
+                if (Mode == 1)
                 {
-                    f.Add(new CustomPoint(e.X, e.Y));
+                    //f.Add(new CustomPoint(e.X, e.Y));
+                    f.Add(new CustomPoint(ToDekartX(e.X), ToDekartY(e.Y)));
+                    g.DrawRectangle(pen, e.X, e.Y, 1, 1);
+                    pictureBox1.Invalidate();
+
                 }
                 else
                 {
                     if (f.Points().Count < 2) 
                     {
-                        f.Add(new CustomPoint(e.X, e.Y));
+						//f.Add(new CustomPoint(e.X, e.Y));
+						f.Add(new CustomPoint(ToDekartX(e.X), ToDekartY(e.Y)));
+                        g.DrawRectangle(pen, e.X, e.Y, 1, 1);
                     }
                 }
+
             }
             if (CurrPanel == 1)
             {
@@ -481,8 +508,8 @@ namespace Interface
                             b1.Enabled = true;
                             if (e.Button == MouseButtons.Left)
                             {
-                                l11.Text = "X: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
-                                l12.Text = "Y: " + ToValidPoint(e.X, e.Y).Y.ToString();
+                                l11.Text = "X: " + ToDekartX(e.X).ToString();
+                                l12.Text = "Y: " + ToDekartY(e.Y).ToString();
                             }
                         }
                     }
@@ -511,14 +538,14 @@ namespace Interface
                         Label l34 = FindControl(panel1, "l34") as Label;
                         if (e.Button == MouseButtons.Left)
                         {
-                            l31.Text = "X1: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
-                            l32.Text = "Y1: " + ToValidPoint(e.X, e.Y).Y.ToString();
-                        }
+                            l31.Text = "X1: " + ToDekartX(e.X).ToString();
+                            l32.Text = "Y1: " + ToDekartY(e.Y).ToString();
+						}
                         if (e.Button == MouseButtons.Right)
                         {
-                            l33.Text = "X2: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
-                            l34.Text = "Y2: " + ToValidPoint(e.X, e.Y).Y.ToString();
-                            b3.Enabled = true;
+                            l33.Text = "X2: " + ToDekartX(e.X).ToString();
+							l34.Text = "Y2: " + ToDekartY(e.Y).ToString();
+							b3.Enabled = true;
                         }
                     }
                 }
@@ -534,9 +561,9 @@ namespace Interface
                         Button b5 = FindControl(panel2, "b5") as Button;
                         if (e.Button == MouseButtons.Left)
                         {
-                            l21.Text = "X: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
-                            l22.Text = "Y: " + ToValidPoint(e.X, e.Y).Y.ToString();
-                        }
+                            l21.Text = "X: " + ToDekartX(e.X).ToString();
+							l22.Text = "Y: " + ToDekartY(e.Y).ToString();
+						}
                         b5.Enabled = true;
                     }
                 }
@@ -548,9 +575,9 @@ namespace Interface
                         Label l12 = FindControl(panel2, "l12") as Label;
                         Button b4 = FindControl(panel2, "b4") as Button;
                         {
-                            l11.Text = "X: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
-                            l12.Text = "Y: " + ToValidPoint(e.X, e.Y).Y.ToString();
-                        }
+                            l11.Text = "X: " + ToDekartX(e.X).ToString();
+							l12.Text = "Y: " + ToDekartY(e.Y).ToString();
+						}
                         b4.Enabled = true;
                     }
                 }
@@ -634,13 +661,29 @@ namespace Interface
 
         private void B5_Click(object sender, EventArgs e)
         {
-            
-        }
+			Label l21 = FindControl(panel2, "l21") as Label;
+			Label l22 = FindControl(panel2, "l22") as Label;
+			Label l23 = FindControl(panel2, "l23") as Label;
+			int x;
+			int y;
+			int.TryParse(l21.Text.Split(' ')[1], out x);
+			int.TryParse(l22.Text.Split(' ')[1], out y);
+			var res = f.pointInFigure(new CustomPoint(x, y));
+			l23.Text = "Result: " + res.ToString();
+		}
 
-        private void B4_Click(object sender, EventArgs e)
-        {
-            
-        }
+		private void B4_Click(object sender, EventArgs e)
+		{
+			Label l11 = FindControl(panel2, "l11") as Label;
+			Label l12 = FindControl(panel2, "l12") as Label;
+			Label l13 = FindControl(panel2, "l13") as Label;
+			int x;
+			int y;
+			int.TryParse(l11.Text.Split(' ')[1], out x);
+			int.TryParse(l12.Text.Split(' ')[1], out y);
+			var res = Figure.classify(new CustomPoint(x, y), new CustomPoint(f.Points()[0].x, f.Points()[0].y), new CustomPoint(f.Points()[1].x, f.Points()[1].y));
+			l13.Text = "Result: " + res.ToString();
+		}
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
         {
