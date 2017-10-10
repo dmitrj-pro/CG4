@@ -74,12 +74,13 @@ namespace Interface
             return new System.Drawing.Point(x + pictureBox1.Width / 2, -1 * y + pictureBox1.Height / 2);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void RedrawPolygon(Figure f)
         {
+            ClearPB();
             Graphics g = Graphics.FromImage(pictureBox1.Image);
             Point[] points = new Point[f.Points().Count];
             int i = 0;
-            foreach(var p in f.Points())
+            foreach (var p in f.Points())
             {
                 points[i] = new Point(Convert.ToInt16(p.x), Convert.ToInt16(p.y));
                 i += 1;
@@ -87,6 +88,11 @@ namespace Interface
             Pen pen = new Pen(Color.Red);
             g.DrawPolygon(pen, points);
             pictureBox1.Invalidate();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            RedrawPolygon(f);
             panel1.Controls.Clear();
             panel2.Controls.Clear();
             comboBox2.Items.Clear();
@@ -212,7 +218,7 @@ namespace Interface
                 b1.Name = "b1";
                 b1.Size = new Size(120, 23);
                 b1.Text = "Применить";
-                b1.Enabled = false;
+                //b1.Enabled = false;
                 b1.Click += B1_Click;
                 b1.Location = new Point(54, 346);
 
@@ -328,7 +334,7 @@ namespace Interface
                     Label l35 = new Label();
                     l35.Text = "Результат: ";
                     l35.Name = "l35";
-                    l35.Size = new Size(50, 20);
+                    l35.Size = new Size(100, 20);
                     l35.TextAlign = ContentAlignment.MiddleCenter;
                     l35.Location = new Point(10, 60);
                     panel1.Controls.Add(l35);
@@ -351,6 +357,7 @@ namespace Interface
             Label l32 = FindControl(panel1, "l32") as Label;
             Label l33 = FindControl(panel1, "l33") as Label;
             Label l34 = FindControl(panel1, "l34") as Label;
+            Label l35 = FindControl(panel1, "l35") as Label;
             int x1;
             int y1;
             int x2;
@@ -359,6 +366,11 @@ namespace Interface
             int.TryParse(l32.Text.Split(' ')[1], out y1);
             int.TryParse(l33.Text.Split(' ')[1], out x2);
             int.TryParse(l34.Text.Split(' ')[1], out y2);
+            Figure f2 = new Figure();
+            f2.Add(new CustomPoint(x1, y1));
+            f2.Add(new CustomPoint(x2, y2));
+            var res = Figure.GetPoint(f, f2);
+            l35.Text = (res.x).ToString("F0") + "_" + (res.y).ToString("F0"); /*f.Points()[0].x + "_" + f.Points()[0].y + " " + f.Points()[1].x + "_" + f.Points()[1].y*/
             //Вот тут вызываем соответствующую функцию поиска пересечения двух ребер
             //todo
         }
@@ -366,8 +378,10 @@ namespace Interface
         private void B2_Click(object sender, EventArgs e)
         {
             TextBox t2 = FindControl(panel1, "t2") as TextBox;
-            int scale;
-            int.TryParse(t2.Text, out scale);
+            double scale;
+            double.TryParse(t2.Text, out scale);
+            f = Figure.Scale(f, scale);
+            RedrawPolygon(f);
             //Вот тут вызываем соответствующую функцию масштабирования
             //todo
         }
@@ -396,13 +410,32 @@ namespace Interface
             TextBox t1 = FindControl(panel1, "t1") as TextBox;
             int x;
             int y;
-            int angle;
-            int.TryParse(t1.Text, out angle);
+            double angle;
+            double.TryParse(t1.Text, out angle);
             int.TryParse(l11.Text.Split(' ')[1], out x);
             int.TryParse(l12.Text.Split(' ')[1], out y);
-
+            if (Mode == 0)
+            {
+                if (!(FindControl(panel1, "cb1") as CheckBox).Checked)
+                {
+                    //throw new Exception(x.ToString() + y.ToString() + angle.ToString());
+                    f = Figure.RotationPoint(f, new CustomPoint(x, y), angle);
+                }
+                else
+                {
+                    f = Figure.RotationLine(f, -3.14/2);
+                }
+            }
+            else
+            {
+                f = Figure.Rotation(f, angle);
+            }
+            
+            RedrawPolygon(f);
+            //Figure.RotationPoint()
             //Вот тут вызываем соответствующую функцию поворота
             //todo
+
         }
 
         private void B0_Click(object sender, EventArgs e)
@@ -413,9 +446,8 @@ namespace Interface
             int y;
             int.TryParse(t0x.Text, out x);
             int.TryParse(t0y.Text, out y);
-            f.s
-            //Вот тут вызываем соответствующую функцию смещения
-            //todo
+            f = Figure.Displacement(f, x, -1 * y);
+            RedrawPolygon(f);
         }
 
         private void pictureBox1_MouseClick(object sender, MouseEventArgs e)
@@ -460,11 +492,11 @@ namespace Interface
                         Label l12 = FindControl(panel1, "l12") as Label;
                         Button b1 = FindControl(panel1, "b1") as Button;
                         b1.Enabled = true;
-                        if (e.Button == MouseButtons.Left)
+                        /*if (e.Button == MouseButtons.Left)
                         {
                             l11.Text = "X: " + (ToValidPoint(e.X, e.Y).X - 500).ToString();
                             l12.Text = "Y: " + ToValidPoint(e.X, e.Y).Y.ToString();
-                        }
+                        }*/
                     }
                 }
 
